@@ -62,7 +62,8 @@ void seqSC(RGBA **inImg, unsigned inW, unsigned inH,
     unsigned min = UINT32_MAX;
     unsigned idx = 0;
     for (unsigned j = 0; j < W; ++j) {
-      if (diff[inH-1][j] < min) {
+      // use "<=" to reduce time for adjusting array
+      if (diff[inH-1][j] <= min) {
         min = diff[inH-1][j];
         idx = j;
       }
@@ -117,7 +118,8 @@ void seqSC(RGBA **inImg, unsigned inW, unsigned inH,
     unsigned min = UINT32_MAX;
     unsigned idx = 0;
     for (unsigned i = 0; i < H; ++i) {
-      if (diff[i][outW-1] < min) {
+      // use "<=" to reduce time for adjusting array
+      if (diff[i][outW-1] <= min) {
         min = diff[i][outW-1];
         idx = i;
       }

@@ -14,7 +14,7 @@ CC = gcc
 NVCC = nvcc
 
 sc: main.cpp seq.cpp cuda.cu $(LOADPNGH) $(LOADPNGCPP)
-	$(nvcc) $(NVCCFLAGS) -c main.cpp seq.cpp cuda.cu $(LOADPNGCPP) -o $@
+	$(nvcc) $(NVCCFLAGS) -c main.cpp $(LOADPNGCPP) -o $@
 
 clean:
 	rm sc
