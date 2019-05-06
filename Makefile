@@ -5,7 +5,7 @@ all: sc
 OPTFLAGS = -O2 -std=c++11
 INCFLAGS = -I.
 CFLAGS = $(OPTFLAGS) $(INCFLAGS)
-NVCCFLAGS = $(CFLAGS) --ptxas-options=-v -arch=sm_61
+NVCCFLAGS = $(CFLAGS) --ptxas-options=-v -rdc=true -arch=sm_61
 
 CXX = g++
 XCP = -ccbin $(CXX) -Xcompiler "-std=c++11"
@@ -24,7 +24,7 @@ CU_OBJ = $(CU_SRC:%.cu=%.o)
 	$(NVCC) $(NVCCFLAGS) -o $@ -c $<
 
 sc: $(C_OBJ) $(CU_OBJ)
-	$(NVCC) $(OPTFLAGS) $(C_OBJ) $(CU_OBJ) -o $@
+	$(NVCC) $(NVCCFLAGS) $(C_OBJ) $(CU_OBJ) -o $@
 
 clean:
 	rm -rf *.o sc

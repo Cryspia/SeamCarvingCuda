@@ -53,7 +53,7 @@ inline static void shrink(RGBA **img,
     }
 
     // find minimum
-    unsigned min = std::numeric_limits<unsigned>::max();;
+    unsigned min = std::numeric_limits<unsigned>::max();
     unsigned idx = 0;
     for (unsigned j = 0; j < W; ++j) {
       // use "<=" to reduce time for adjusting array
@@ -92,7 +92,7 @@ void seqSC(RGBA **inImg, unsigned inW, unsigned inH,
 
   // shrink width
   shrink(outImg, inW, outW, inH, trace, diff, from);
-  
+
   if (inH > outH) {
     // need height shrink
     // reset arrays

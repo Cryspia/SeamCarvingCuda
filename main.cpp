@@ -11,7 +11,7 @@
 #include "lodepng.h"
 #include "util.h"
 #include "sc_seq.h"
-//#include "sc_cuda.h"
+#include "sc_cuda.h"
 
 int main(int argc, char** argv) {
   // parse input arguments
@@ -87,7 +87,7 @@ int main(int argc, char** argv) {
 
   // seam carving
   if (usingCuda) {
-    //cudaSC(inputImg, width, height, outputImg, targetW, targetH);
+    cudaSC(inputImg, width, height, outputImg, targetW, targetH);
   } else {
     seqSC(inputImg, width, height, outputImg, targetW, targetH);
   }
