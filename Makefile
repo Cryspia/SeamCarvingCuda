@@ -2,19 +2,24 @@
 
 all: sc
 
-OPTFLAGS = -ansi -pedantic -Wall -Wextra -O2
+OPTFLAGS = -ansi -pedantic -Wall -O2
 INCFLAGS = -I.
 CFLAGS = $(OPTFLAGS) $(INCFLAGS)
-NVCCFLAGS = $(CFLAGS) --ptxas-options=-v -arch=sm_61
+NVCCFLAGS = $(INCFLAGS) -O2 --ptxas-options=-v -arch=sm_61
+LDFLAGS = -O2
 
-LOADPNGH = lodepng.h
-LOADPNGCPP = lodepng.cpp
-
-CC = gcc
+CXX = g++
+XCP = -ccbin $(CXX) -Xcompiler "-std=c++11"
 NVCC = nvcc
 
-sc: main.cpp seq.cpp cuda.cu $(LOADPNGH) $(LOADPNGCPP)
-	$(nvcc) $(NVCCFLAGS) -c main.cpp $(LOADPNGCPP) -o $@
+lodepng.o : lodepng.h lodepng.cpp
+	$(NVCC) $(XCP) $(NVCCFLAGS) -o $@ -c lodepng.cpp
+
+main.o : main.cpp seq.cpp cuda.cu
+	$(NVCC) $(XCP) $(NVCCFLAGS) -o $@ -c main.cpp
+
+sc: main.o lodepng.o
+	$(NVCC) $(XCP) $(LDFLAGS) main.o lodepng.o -o $@
 
 clean:
-	rm sc
+	rm -rf *.o sc
