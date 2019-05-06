@@ -14,23 +14,19 @@
 
 inline unsigned diffRGB(RGBA p1, RGBA p2) {
   return abs(int(p1.r) - int(p2.r)) +
-    abs(int(p1.g) - int(p2.g)) +
-    abs(int(p1.b) - int(p2.b));
+         abs(int(p1.g) - int(p2.g)) +
+         abs(int(p1.b) - int(p2.b));
 }
 
 void seqSC(RGBA **inImg, unsigned inW, unsigned inH,
-      RGBA ** outImg, unsigned outW, unsigned outH) {
+           RGBA ** outImg, unsigned outW, unsigned outH) {
   // array for recording
-  auto ** trace = new unsigned* [inH];
-  auto ** diff = new unsigned* [inH];
+  unsigned **trace, **diff;
+  new2D(trace, inH, inW, unsigned);
+  new2D(diff, inH, inW, unsigned);
 
   // copy input to output
-  for (unsigned i = 0; i < inH; ++i) {
-    trace[i] = new unsigned [inW];
-    diff[i] = new unsigned [inW];
-    for (unsigned j = 0; j < inW; ++j)
-      outImg[i][j] = inImg[i][j];
-  }
+  memcpy(outImg[0], inImg[0], inH * inW * sizeof(RGBA));
 
   // shrink width
   for (auto W = inW; W > outW; --W) {
@@ -83,10 +79,8 @@ void seqSC(RGBA **inImg, unsigned inW, unsigned inH,
   }
 
   // reset arrays
-  for (unsigned i = 0; i < inH; ++i) {
-    memset(trace[i], 0, sizeof(unsigned) * inW);
-    memset(diff[i], 0, sizeof(unsigned) * inW);
-  }
+  memset(trace[0], 0, inH * inW * sizeof(unsigned));
+  memset(diff[0], 0, inH * inW * sizeof(unsigned));
 
   // shrink height
   for (auto H = inH; H > outH; --H) {
@@ -139,10 +133,8 @@ void seqSC(RGBA **inImg, unsigned inW, unsigned inH,
   }
 
   // free
-  for (unsigned i = 0; i < inH; ++i) {
-    delete[] trace[i];
-    delete[] diff[i];
-  }
+  delete[] trace[0];
+  delete[] diff[0];
   delete[] trace;
   delete[] diff;
 }

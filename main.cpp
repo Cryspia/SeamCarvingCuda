@@ -71,12 +71,11 @@ int main(int argc, char** argv) {
   // prepare for seam carving
   if (targetH == 0 || targetH > height) targetH = height;
   if (targetW == 0 || targetW > width) targetW = width;
-  RGBA **inputImg = new RGBA *[height];
-  RGBA **outputImg = new RGBA *[height];
+  RGBA **inputImg, **outputImg;
+  new2D(inputImg, height, width, RGBA);
+  new2D(outputImg, height, width, RGBA);
   unsigned offset = 0;
   for (unsigned i = 0; i < height; ++i) {
-    inputImg[i] = new RGBA [width];
-    outputImg[i] = new RGBA [width];
     for (unsigned j = 0; j < width; ++j) {
       inputImg[i][j].r = imageVec[offset++];
       inputImg[i][j].g = imageVec[offset++];
@@ -95,15 +94,15 @@ int main(int argc, char** argv) {
 
   // output image
   for (unsigned i = 0; i < targetH; ++i) {
-    delete[] inputImg[i];
     for (unsigned j = 0; j < targetW; ++j) {
       imageVec.push_back(outputImg[i][j].r);
       imageVec.push_back(outputImg[i][j].g);
       imageVec.push_back(outputImg[i][j].b);
       imageVec.push_back(outputImg[i][j].a);
     }
-    delete[] outputImg[i];
   }
+  delete[] inputImg[0];
+  delete[] outputImg[0];
   delete[] inputImg;
   delete[] outputImg;
   err = lodepng::encode(outputF, imageVec, targetW, targetH);
