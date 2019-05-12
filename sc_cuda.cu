@@ -45,22 +45,32 @@ void searchPath(RGBA* img, unsigned h, unsigned w, unsigned dim, unsigned *trace
   cooperative_groups::grid_group g = cooperative_groups::this_grid();
   for (unsigned i = 1; i < h; ++i) {
     unsigned t = j;
-    unsigned d = diffRGB(img[i*dim + j], img[(i-1)*dim + j]) + diff[(i-1)*dim + j];
+    unsigned e = diffRGB(img[i*dim + j], img[(i-1)*dim + j]);
+    unsigned en = 1;
+    unsigned d = diff[(i-1)*dim + j];
     if (j != 0) {
-      unsigned pd = diffRGB(img[i*dim + j], img[(i-1)*dim + j-1]) + diff[(i-1)*dim + j-1];
+      e += diffRGB(img[i*dim + j], img[(i-1)*dim + j-1]);
+      en ++;
+      unsigned pd = diff[(i-1)*dim + j-1];
       if (pd < d) {
         d = pd;
         t = j - 1;
       }
     }
     if (j != w-1) {
-      unsigned nd = diffRGB(img[i*dim + j], img[(i-1)*dim + j+1]) + diff[(i-1)*dim + j+1];
+      e += diffRGB(img[i*dim + j], img[(i-1)*dim + j+1]);
+      en ++;
+      unsigned nd = diff[(i-1)*dim + j+1];
       if (nd < d) {
         d = nd;
         t = j + 1;
       }
     }
-    diff[i*dim + j] = d;
+    if (i != h-1) {
+      e += diffRGB(img[i*dim + j], img[(i+1)*dim + j]);
+      en ++;
+    }
+    diff[i*dim + j] = d + e / en;
     trace[i*dim + j] = t;
     // sync among blocks
     g.sync();

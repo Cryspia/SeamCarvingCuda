@@ -32,22 +32,32 @@ inline static void shrink(RGBA **img,
     for (unsigned i = 1; i < H; ++i) {
       for (unsigned j = 0; j < W; ++j) {
         unsigned t = j;
-        unsigned d = diffRGB(img[i][j], img[i-1][j]) + diff[i-1][j];
+        unsigned e = diffRGB(img[i][j], img[i-1][j]);
+        unsigned en = 1;
+        unsigned d = diff[i-1][j];
         if (j != 0) {
-          unsigned pd = diffRGB(img[i][j], img[i-1][j-1]) + diff[i-1][j-1];
+          e += diffRGB(img[i][j], img[i-1][j-1]);
+          en ++;
+          unsigned pd = diff[i-1][j-1];
           if (pd < d) {
             d = pd;
             t = j - 1;
           }
         }
         if (j != W-1) {
-          unsigned nd = diffRGB(img[i][j], img[i-1][j+1]) + diff[i-1][j+1];
+          e += diffRGB(img[i][j], img[i-1][j+1]);
+          en ++;
+          unsigned nd = diff[i-1][j+1];
           if (nd < d) {
             d = nd;
             t = j + 1;
           }
         }
-        diff[i][j] = d;
+        if (i != H-1) {
+          e += diffRGB(img[i][j], img[i+1][j]);
+          en ++;
+        }
+        diff[i][j] = d + e/en;
         trace[i][j] = t;
       }
     }
